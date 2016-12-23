@@ -8,7 +8,7 @@ public class FaffAboutAction : Action {
     private bool m_completed = false;
     private float m_startingTime = 0;
 
-    public float m_timeToFaff;
+    public float m_timeToComplete;
 
     #endregion
 
@@ -46,7 +46,7 @@ public class FaffAboutAction : Action {
         if (m_startingTime == 0)
             m_startingTime = Time.time;
 
-        if (Time.time - m_startingTime > m_timeToFaff)
+        if (Time.time - m_startingTime > m_timeToComplete)
         {
             //GetComponent<Animator>().SetBool("faffing", false);
             m_completed = true;

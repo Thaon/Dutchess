@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 
 [RequireComponent(typeof(NavMeshAgent))]
-[RequireComponent(typeof(Inventory))]
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Rigidbody))]
 public abstract class NPCAgent : MonoBehaviour, IGoap {
 
     #region member variables
@@ -30,26 +30,9 @@ public abstract class NPCAgent : MonoBehaviour, IGoap {
         //increase/decrease values
 	}
 
-    public HashSet<KeyValuePair<string, object>> getWorldState()
-    {
-        HashSet<KeyValuePair<string, object>> worldState = new HashSet<KeyValuePair<string, object>>();
-
-        /**
-         * add actions like this:
-         * 
-         *   if (GetComponent<EatAction>() != null)
-         *      {
-         *          worldState.Add(new KeyValuePair<string, object>("hungry", GetComponent<EatAction>().IsHungry()));
-         *      }
-         */
-        /**
-         * check inventory if needed like this:
-         * 
-         * worldState.Add(new KeyValuePair<string, object>("hasIngredients", m_inventory.Contains("ingredients")));
-         */
-
-        return worldState;
-    }
+    //to be implemented in derived classes
+    public abstract HashSet<KeyValuePair<string, object>> createGoalState();
+    public abstract HashSet<KeyValuePair<string, object>> getWorldState();
 
     public void planFailed(HashSet<KeyValuePair<string, object>> failedGoal)
     {
@@ -96,9 +79,6 @@ public abstract class NPCAgent : MonoBehaviour, IGoap {
             return false;
         }
     }
-
-    //to be implemented in derived classes
-    public abstract HashSet<KeyValuePair<string, object>> createGoalState();
 
     public void AddToInventory(string item, byte amount)
     {
