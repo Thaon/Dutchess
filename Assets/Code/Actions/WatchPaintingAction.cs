@@ -56,27 +56,28 @@ public class WatchPaintingAction : Action {
                 availablePaintings.Add(painting);
             }
         }
+        
+        //to be used when we have different actions
+        //foreach (GameObject painting in availablePaintings)
+        //{
+        //    PointOfInterest poi = painting.GetComponent<PointOfInterest>();
 
-        foreach (GameObject painting in availablePaintings)
-        {
-            PointOfInterest poi = painting.GetComponent<PointOfInterest>();
-
-            if (nearest == null)
-            {
-                nearest = painting;
-                max = Vector3.Distance(painting.transform.position, transform.position);
-            }
-            else
-            {
-                float dist = Vector3.Distance(painting.transform.position, transform.position);
-                if (dist < max)
-                {
-                    nearest = painting;
-                    max = dist;
-                }
-            }
-        }
-        //nearest = availablePaintings[Random.Range(0, availablePaintings.Count - 1)];
+        //    if (nearest == null)
+        //    {
+        //        nearest = painting;
+        //        max = Vector3.Distance(painting.transform.position, transform.position);
+        //    }
+        //    else
+        //    {
+        //        float dist = Vector3.Distance(painting.transform.position, transform.position);
+        //        if (dist < max)
+        //        {
+        //            nearest = painting;
+        //            max = dist;
+        //        }
+        //    }
+        //}
+        nearest = availablePaintings[Random.Range(0, availablePaintings.Count - 1)];
 
         if (nearest == null)
             return false;
