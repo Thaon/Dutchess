@@ -89,7 +89,7 @@ public class WatchPaintingAction : Action {
         m_lastVisited = nearest;
         nearest.GetComponent<PointOfInterest>().AddUser(this.gameObject);
 
-        return nearest != null;
+        return nearest != null && GetComponent<TouristNPC>().m_satisfaction < GetComponent<TouristNPC>().m_maxSatisfaction;
     }
 
     public override bool Perform(GameObject agent)
@@ -102,6 +102,7 @@ public class WatchPaintingAction : Action {
         {
             //GetComponent<Animator>().SetBool("faffing", false);
             m_target.GetComponent<PointOfInterest>().RemoveUser(this.gameObject);
+            GetComponent<TouristNPC>().m_satisfaction++;
             m_completed = true;
         }
         return true;

@@ -20,7 +20,7 @@ public class CreateRoomScript : MonoBehaviour {
     public GameObject Password; // Reference to the Password GameObject (If we check the private toggle then it is enabled)
 
     private bool hasPassword = false; // It is used to check if the room is open or private.
-    public int maxPlayers = 8; // Set the max players for the room.
+    public int maxPlayers = 2; // Set the max players for the room.
     public InputField InputFieldPassword; // Reference to the password input field.
     public Text PlayersNumber; // Reference to the players number.
 
