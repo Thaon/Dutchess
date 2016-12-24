@@ -14,6 +14,8 @@ public abstract class NPCAgent : MonoBehaviour, IGoap {
     private NavMeshAgent m_nav;
     private Animator m_anim;
 
+    public int m_maxSatisfaction = 3;
+
     #endregion
 
     void Start ()

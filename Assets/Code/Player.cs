@@ -10,6 +10,7 @@ public class Player : PunBehaviour {
     private Material m_mat;
     private NavMeshAgent m_agent;
 
+    public bool m_isSpy;
     public Material m_standard;
 
     #endregion
@@ -19,7 +20,12 @@ public class Player : PunBehaviour {
         m_pview = GetComponent<PhotonView>();
         m_mat = GetComponent<Material>();
         m_agent = GetComponent<NavMeshAgent>();
-	}
+        if (PhotonNetwork.isMasterClient)
+            m_isSpy = true;
+        else
+            m_isSpy = false;
+
+    }
 	
 	void Update ()
     {
