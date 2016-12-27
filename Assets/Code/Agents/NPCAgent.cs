@@ -14,6 +14,7 @@ public abstract class NPCAgent : MonoBehaviour, IGoap {
     private NavMeshAgent m_nav;
     private Animator m_anim;
 
+    public Vector3 m_lookAtPosition;
     public int m_maxSatisfaction = 3;
 
     #endregion
@@ -27,10 +28,13 @@ public abstract class NPCAgent : MonoBehaviour, IGoap {
 	
 	void Update ()
     {
-	    //do animator stuff
+        //do animator stuff
+        m_anim.SetFloat("speed", m_nav.velocity.magnitude);
 
         //increase/decrease values
-	}
+        if (m_nav.velocity.magnitude < 0.1f && m_lookAtPosition != null)
+            transform.LookAt(m_lookAtPosition);
+    }
 
     //to be implemented in derived classes
     public abstract HashSet<KeyValuePair<string, object>> createGoalState();
@@ -66,12 +70,15 @@ public abstract class NPCAgent : MonoBehaviour, IGoap {
 
         // move towards the NextAction's target
         Vector3 fullDis = transform.position - nextAction.GetTarget().transform.position;
-        fullDis.y = 0;
-        if (fullDis.magnitude <= 1)
+        fullDis.y = transform.position.y;
+
+        if (fullDis.magnitude < .3f)
         {
             // we are at the target location, we are done
             nextAction.SetInRange();
             m_nav.Stop();
+            m_lookAtPosition.y = transform.position.y;
+            transform.LookAt(m_lookAtPosition);
             return true;
         }
         else

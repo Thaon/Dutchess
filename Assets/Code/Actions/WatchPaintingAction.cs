@@ -77,31 +77,39 @@ public class WatchPaintingAction : Action {
         //        }
         //    }
         //}
-        nearest = availablePaintings[Random.Range(0, availablePaintings.Count - 1)];
+        if (availablePaintings.Count > 0)
+        {
+            nearest = availablePaintings[Random.Range(0, availablePaintings.Count - 1)];
+            m_lastVisited = nearest;
+            nearest.GetComponent<PointOfInterest>().AddUser(this.gameObject);
+        }
 
         if (nearest == null)
             return false;
 
+        //select one of the available positions
+        nearest = nearest.GetComponent<PointOfInterest>().GetAvailablePosition();
+        SetTarget(nearest);
+        GetComponent<NPCAgent>().m_lookAtPosition = m_lastVisited.GetComponent<PointOfInterest>().m_lookAtPosition.transform.position;
+
+
         //randomise time to complete
         m_timeToComplete += Random.Range(1, 5);
 
-        SetTarget(nearest);
-        m_lastVisited = nearest;
-        nearest.GetComponent<PointOfInterest>().AddUser(this.gameObject);
-
-        return nearest != null && GetComponent<TouristNPC>().m_satisfaction < GetComponent<TouristNPC>().m_maxSatisfaction;
+        return nearest != null;
     }
 
     public override bool Perform(GameObject agent)
     {
-        // GetComponent<Animator>().SetBool("faffing", true);
+        GetComponent<Animator>().SetBool("watching", true);
         if (m_startingTime == 0)
             m_startingTime = Time.time;
 
         if (Time.time - m_startingTime > m_timeToComplete)
         {
-            //GetComponent<Animator>().SetBool("faffing", false);
-            m_target.GetComponent<PointOfInterest>().RemoveUser(this.gameObject);
+            GetComponent<Animator>().SetBool("watching", false);
+            m_lastVisited.GetComponent<PointOfInterest>().RemoveUser(this.gameObject);
+            m_lastVisited.GetComponent<PointOfInterest>().RestorePosition(m_target);
             GetComponent<TouristNPC>().m_satisfaction++;
             m_completed = true;
         }

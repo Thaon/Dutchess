@@ -39,8 +39,8 @@ public class TouristNPC : NPCAgent
          * 
          * worldState.Add(new KeyValuePair<string, object>("hasIngredients", m_inventory.Contains("ingredients")));
          */
-        worldState.Add(new KeyValuePair<string, object>("amused", !m_bored));
-        worldState.Add(new KeyValuePair<string, object>("satisfied", m_satisfaction == m_maxSatisfaction));
+        worldState.Add(new KeyValuePair<string, object>("amused", m_satisfaction >= m_maxSatisfaction));
+        worldState.Add(new KeyValuePair<string, object>("satisfied", m_satisfaction < m_maxSatisfaction));
 
 
         return worldState;
