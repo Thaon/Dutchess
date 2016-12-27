@@ -27,8 +27,7 @@ public class DeathMatchExample : GameMode
         CounterTime = StartTimeToSpawn;
         m_Camera = Camera.main;
         StartCoroutine(Init());
-        if (AimGUI)
-            AimGUI.SetActive(false);
+
         roundTimer = GameObject.FindObjectOfType(typeof(RoundTimer)) as RoundTimer;
         GameObject _counter = GameObject.Find("Counter");
         if (_counter)
@@ -90,9 +89,7 @@ public class DeathMatchExample : GameMode
         {
             Player.SendMessageUpwards("Stop");
         }
-        /// <summary> Shows the Aim GUI, Health, bullets etc.. </summary>
-        if (AimGUI)
-            AimGUI.SetActive(true);
+
         isInit = true;
     }
 

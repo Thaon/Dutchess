@@ -14,29 +14,20 @@ public class GameMode : MonoBehaviour
     protected Camera m_Camera; // Reference to the Main Camera.
     protected GameObject GameUI; // Reference to the In-Game menu.
     protected GameObject ExitMenu; //Reference to the Exit menu.
-    protected GameObject AimGUI; // Reference to the Aim GUI (Health, bullets, etc..)
     public bool isTeamBased = false;
-    Transform[] SpawnPoints; // It is used to know if the game mode is team based.
+    [SerializeField]
+    GameObject[] SpawnPoints; // It is used to know if the game mode is team based.
     public int SpawnPointsNum = 12; // Reference to the spawn ponts number. This is to know how many spawn points there are in the scene.
 
     /// <summary> Init some variables. Get the spawn points etc.. </summary>
     public virtual void Awake()
     {
-        if (AimGUI == null)
-            AimGUI = GameObject.Find("Multiplayer").transform.Find("GameUI/AimGUI").gameObject;
         if(GameUI == null)
         GameUI = GameObject.Find("Multiplayer").transform.Find("GameUI").gameObject;
         if (ExitMenu == null)
             ExitMenu = GameObject.Find("Multiplayer").transform.Find("GameUI/ExitMenu").gameObject;
 
-        Transform SpawnPointsObj = GameObject.Find("SpawnPoints").transform;
-        SpawnPoints = new Transform[SpawnPointsNum];
-        int i = 0;
-        foreach (Transform child in SpawnPointsObj)
-        {
-            SpawnPoints[i] = child;
-            i++;
-        }
+        SpawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoint") as GameObject[];
     }
 
     /// <summary> Resets the players team. </summary>
@@ -66,7 +57,7 @@ public class GameMode : MonoBehaviour
     protected Vector3 GetRandomSpawnPoint()
     {
         int rnd = Random.Range(0, SpawnPointsNum);
-        Vector3 pos = SpawnPoints[rnd].position;
+        Vector3 pos = SpawnPoints[rnd].transform.position;
         Vector3 position = pos + SpawnOffset;
         position.x += Random.Range(-3f, 3f);
         position.z += Random.Range(-4f, 4f);

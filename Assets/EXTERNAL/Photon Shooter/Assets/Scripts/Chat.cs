@@ -181,26 +181,28 @@ public class Chat : MonoBehaviour {
     {
         GameObject selected = EventSystem.current.currentSelectedGameObject;
 
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (selected != null)
         {
-            if (ChatInputField.gameObject.Equals(selected))
+            if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                EventSystem.current.SetSelectedGameObject(ChatInputField.gameObject, null);
-                FadeIn();
+                if (ChatInputField.gameObject.Equals(selected))
+                {
+                    EventSystem.current.SetSelectedGameObject(ChatInputField.gameObject, null);
+                    FadeIn();
+                }
             }
-        }
 
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
-        {
-            if (EventSystem.current.currentSelectedGameObject && EventSystem.current.currentSelectedGameObject.name == "InputField")
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
             {
-                EventSystem.current.SetSelectedGameObject(null);
-                return;
-            }
-            else
-                EventSystem.current.SetSelectedGameObject(ChatInputField.gameObject, null);
+                if (EventSystem.current.currentSelectedGameObject && EventSystem.current.currentSelectedGameObject.name == "InputField")
+                {
+                    EventSystem.current.SetSelectedGameObject(null);
+                    return;
+                }
+                else
+                    EventSystem.current.SetSelectedGameObject(ChatInputField.gameObject, null);
                 FadeIn();
+            }
         }
     }
-
 }

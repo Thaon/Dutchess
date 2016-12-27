@@ -54,18 +54,12 @@ public class GameManager : MonoBehaviour
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 Menu.SetActive(true);
-                PlayerObj = GameObject.Find("LocalPlayer");
-                if (PlayerObj)
-                    PlayerObj.SendMessageUpwards("Stop");
             }
             else
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
                 Menu.SetActive(false);
-                PlayerObj = GameObject.Find("LocalPlayer");
-                if (PlayerObj)
-                    PlayerObj.SendMessageUpwards("Init");
             }
         }
     }
@@ -73,8 +67,6 @@ public class GameManager : MonoBehaviour
     /// <summary> This is used to disable the player, camera movements and other inputs in it. </summary>
     public virtual void Stop()
     {
-        if(PlayerObj != null)
-        PlayerObj.SendMessageUpwards("Stop");
         Menu.SetActive(false);
         this.gameObject.SetActive(false);
     }
@@ -84,8 +76,6 @@ public class GameManager : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        PlayerObj = GameObject.Find("LocalPlayer");
-        PlayerObj.SendMessageUpwards("Init");
     }
 
     /// <summary> If we want to exit the game we leave the room and we get back to the main menu. </summary>

@@ -36,8 +36,7 @@ public class DeathMatchTeamsExample : GameMode
         TeamSelection.SetActive(true);
 
         StartCoroutine(Init());
-        if (AimGUI)
-            AimGUI.SetActive(false);
+
         roundTimer = GameObject.FindObjectOfType(typeof(RoundTimer)) as RoundTimer;
         GameObject _counter = GameObject.Find("Counter");
         if (_counter)
@@ -113,9 +112,7 @@ public class DeathMatchTeamsExample : GameMode
         {
             Player.SendMessageUpwards("Stop");
         }
-        /// <summary> Shows the Aim GUI, Health, bullets etc.. </summary>
-        if (AimGUI)
-            AimGUI.SetActive(true);
+
         isInit = true;
     }
 

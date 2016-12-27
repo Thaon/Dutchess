@@ -2,6 +2,7 @@
 using System.Collections;
 using Photon;
 
+[RequireComponent(typeof(PhotonView))]
 public class Player : PunBehaviour {
 
     #region member variables
