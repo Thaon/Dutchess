@@ -94,6 +94,11 @@ public class Player : PunBehaviour {
                         ClassicMode mode = FindObjectOfType<ClassicMode>() as ClassicMode;
                         mode.PoliceWins();
                     }
+                    else
+                    {
+                        ClassicMode mode = FindObjectOfType<ClassicMode>() as ClassicMode;
+                        mode.PoliceWins();
+                    }
                 }
             }
         }

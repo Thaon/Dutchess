@@ -60,6 +60,18 @@ public class ClassicMode : GameMode
         }
     }
 
+    public void SpyWins()
+    {
+        Result.SetActive(true);
+        if (Result)
+        {
+            Result.SetActive(true);
+            Result.transform.Find("ResultText").GetComponent<Text>().text = "The Spy won!";
+            if (!m_isOver)
+                StartCoroutine(EndRound());
+        }
+    }
+
     public void PoliceWins()
     {
         roundTimer.StopRound();
@@ -166,7 +178,7 @@ public class ClassicMode : GameMode
     bool CheckForPlayers()
     {
         int numOfPlayers = PhotonNetwork.playerList.Length;
-        if (numOfPlayers >= 1)
+        if (numOfPlayers > 1)
         {
             return true;
         }
