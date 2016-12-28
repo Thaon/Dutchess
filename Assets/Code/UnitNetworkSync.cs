@@ -32,10 +32,9 @@ public class UnitNetworkSync : PunBehaviour {
             stream.SendNext(m_nav.destination);
             stream.SendNext((int)m_player.m_animState);
         }
-        else //TODO: Refactor this to include an authoritative server!!!
+        else
         {
             m_nav.SetDestination((Vector3)stream.ReceiveNext());
-            m_nav.Resume();
             m_player.m_animState = (AnimationState)stream.ReceiveNext();
         }
     }

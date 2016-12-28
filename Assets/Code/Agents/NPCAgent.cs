@@ -1,18 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Photon;
 
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Rigidbody))]
-public abstract class NPCAgent : MonoBehaviour, IGoap {
+public abstract class NPCAgent : PunBehaviour, IGoap {
 
     #region member variables
 
     private Inventory m_inventory;
     private NavMeshAgent m_nav;
     private Animator m_anim;
+    private Vector3 m_prevDestination = Vector3.zero;
 
     public Vector3 m_lookAtPosition;
     public int m_maxSatisfaction = 3;
@@ -25,7 +27,10 @@ public abstract class NPCAgent : MonoBehaviour, IGoap {
         m_inventory = new Inventory();
         m_nav = GetComponent<NavMeshAgent>();
         m_anim = GetComponent<Animator>();
-	}
+
+        PhotonNetwork.sendRate = 10;
+        PhotonNetwork.sendRateOnSerialize = 10;
+    }
 	
 	void Update ()
     {
@@ -70,23 +75,29 @@ public abstract class NPCAgent : MonoBehaviour, IGoap {
          * just make sure that the system will include a SetDestination, Stop and Resume.
          */
 
-        // move towards the NextAction's target
-        Vector3 fullDis = transform.position - nextAction.GetTarget().transform.position;
-        fullDis.y = transform.position.y;
+            // move towards the NextAction's target
+            Vector3 fullDis = transform.position - nextAction.GetTarget().transform.position;
+            fullDis.y = transform.position.y;
 
         if (fullDis.magnitude < .3f)
         {
             // we are at the target location, we are done
-            nextAction.SetInRange();
-            m_nav.Stop();
-            m_lookAtPosition.y = transform.position.y;
-            transform.LookAt(m_lookAtPosition);
+            if (PhotonNetwork.isMasterClient)
+            {
+                nextAction.SetInRange();
+                m_nav.Stop();
+                m_lookAtPosition.y = transform.position.y;
+                transform.LookAt(m_lookAtPosition);
+            }
             return true;
         }
         else
         {
-            m_nav.SetDestination(nextAction.GetTarget().transform.position);
-            m_nav.Resume();
+            if (PhotonNetwork.isMasterClient)
+            {
+                m_nav.SetDestination(nextAction.GetTarget().transform.position);
+                m_nav.Resume();
+            }
             return false;
         }
     }
@@ -109,5 +120,29 @@ public abstract class NPCAgent : MonoBehaviour, IGoap {
         {
             mode.ReplenishNPCPool();
         }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.isWriting && PhotonNetwork.isMasterClient)
+        {
+            if (m_nav.destination != null)
+                stream.SendNext(m_nav.destination);
+        }
+        else //TODO: Refactor this to include an authoritative server!!!
+        {
+            Vector3 newPos = (Vector3)stream.ReceiveNext();
+            if (newPos != m_prevDestination)
+            {
+                m_prevDestination = newPos;
+                m_nav.SetDestination(newPos);
+            }
+        }
+    }
+
+    [PunRPC]
+    public void Goto(Vector3 pos)
+    {
+
     }
 }
