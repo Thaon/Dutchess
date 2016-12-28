@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class ClassicMode : GameMode
 {
@@ -8,12 +9,20 @@ public class ClassicMode : GameMode
 
     public int m_minNPC = 5;
 
+    private RoundTimer roundTimer; // Reference to the round timer script.
+    private Text Message;
+    private GameObject Result; // Reference to the Result menu.
+    private bool m_isOver = false;
+
     #endregion
 
     /// <summary> Inits some variables. </summary>
     public override void Awake()
     {
         base.Awake();
+        roundTimer = GameObject.FindObjectOfType(typeof(RoundTimer)) as RoundTimer;
+        Message = GameObject.Find("Multiplayer").transform.Find("Message").GetComponent<Text>();
+        Result = GameObject.Find("Multiplayer").transform.Find("Result").gameObject;
         m_Camera = Camera.main;
     }
 
@@ -23,6 +32,32 @@ public class ClassicMode : GameMode
         StartCoroutine(Init());
         if (PhotonNetwork.isMasterClient)
             StartCoroutine(SpawnNPC(Random.Range(10, 20)));
+    }
+
+    void LateUpdate()
+    {
+        if (roundTimer.TimesUp)
+        {
+            if (Result)
+            {
+                Result.SetActive(true);
+                Result.transform.Find("ResultText").GetComponent<Text>().text = "The Spy won!";
+                if (!m_isOver)
+                    StartCoroutine(EndRound());
+            }
+            return;
+        }
+
+        /// <summary> Inits the countdown for the round. </summary>
+        if (CheckForPlayers() && !roundTimer.isRunning)
+        {
+            if (Message)
+                Message.text = "";
+            if (roundTimer)
+            {
+                roundTimer.StartRound();
+            }
+        }
     }
 
     public void ReplenishNPCPool()
@@ -51,8 +86,14 @@ public class ClassicMode : GameMode
             Debug.Log("creating player");
             Invoke("CreatePlayerObject", .1f);
         }
-        
+
         yield return null;
+    }
+
+    public IEnumerator EndRound()
+    {
+        yield return new WaitForSeconds(3);
+        Exit();
     }
 
     /// <summary> Called when we left the practice mode. Detachs the camera from the player. Destroys the player. </summary>
@@ -63,6 +104,7 @@ public class ClassicMode : GameMode
         if (Player != null)
             PhotonNetwork.Destroy(Player);
         isInit = false;
+        Application.LoadLevel(0);
     }
 
     /// <summary> Instantiates the player. </summary>
@@ -85,5 +127,37 @@ public class ClassicMode : GameMode
         GameObject npc = PhotonNetwork.Instantiate("NPC", GetRandomSpawnPoint(), Quaternion.identity, 0);
         npc.GetComponent<TouristNPC>().m_maxSatisfaction += Mathf.RoundToInt(Random.Range(0, 3));
         StartCoroutine(SpawnNPC(Random.Range(10, 20)));
+    }
+
+    /// <summary> Shows a message and clears the text after 3 seconds. </summary>
+    public override void ShowMessage(string message)
+    {
+        Debug.Log(message);
+        base.ShowMessage(message);
+        if (Message)
+        {
+            Message.text = message;
+            Invoke("ClearMessage", 3.0f);
+        }
+    }
+
+    /// <summary> Clears the message. </summary>
+    void ClearMessage()
+    {
+        if (Message)
+        {
+            Message.text = "";
+        }
+    }
+
+    /// <summary> Only start the round if there are at least more than 1 player. </summary>
+    bool CheckForPlayers()
+    {
+        int numOfPlayers = PhotonNetwork.playerList.Length;
+        if (numOfPlayers >= 1)
+        {
+            return true;
+        }
+        return false;
     }
 }
