@@ -17,14 +17,12 @@ public class Player : PunBehaviour {
     private Animator m_anim;
 
     public bool m_isSpy;
-    public Material m_standard;
 
     #endregion
 
     void Start ()
     {
         m_pview = GetComponent<PhotonView>();
-        m_mat = GetComponent<Material>();
         m_nav = GetComponent<NavMeshAgent>();
         m_anim = GetComponent<Animator>();
 
@@ -42,7 +40,7 @@ public class Player : PunBehaviour {
 	    if (!m_pview.isMine)
         {
             //set material to standard
-            m_mat = m_standard;
+            gameObject.layer = 0;
             return;
         }
 
