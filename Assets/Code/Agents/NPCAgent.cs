@@ -100,4 +100,11 @@ public abstract class NPCAgent : MonoBehaviour, IGoap {
     {
         m_inventory.RemoveItem(item, amount);
     }
+
+    void OnDestroy()
+    {
+        //see if we need to replenish the npc pool
+        ClassicMode mode = FindObjectOfType<ClassicMode>() as ClassicMode;
+        mode.ReplenishNPCPool();
+    }
 }

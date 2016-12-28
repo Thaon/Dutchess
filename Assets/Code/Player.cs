@@ -15,6 +15,7 @@ public class Player : PunBehaviour {
     private Material m_mat;
     private NavMeshAgent m_nav;
     private Animator m_anim;
+    private GameObject m_target;
 
     public bool m_isSpy;
 
@@ -36,8 +37,11 @@ public class Player : PunBehaviour {
 	void Update ()
     {
         m_anim.SetFloat("speed", m_nav.velocity.magnitude);
+        m_anim.SetInteger("state", (int)m_animState);
+        if (m_target != null && m_nav.velocity.magnitude < 0.1f)
+            transform.LookAt(m_target.transform.position);
 
-	    if (!m_pview.isMine)
+        if (!m_pview.isMine)
         {
             //set material to standard
             gameObject.layer = 0;
@@ -61,7 +65,8 @@ public class Player : PunBehaviour {
                 if (hit.collider.tag == "ToSee")
                 {
                     m_animState = AnimationState.amused;
-                    m_nav.destination = hit.point;
+                    m_target = hit.collider.gameObject;
+                    m_nav.destination = hit.collider.GetComponent<PointOfInterest>().GetAvailablePosition().transform.position;
                     m_nav.Resume();
                 }
             }

@@ -3,6 +3,13 @@ using System.Collections;
 
 public class ClassicMode : GameMode
 {
+
+    #region member variables
+
+    public int m_minNPC = 5;
+
+    #endregion
+
     /// <summary> Inits some variables. </summary>
     public override void Awake()
     {
@@ -14,6 +21,26 @@ public class ClassicMode : GameMode
     {
         Debug.Log("Initialising mode");
         StartCoroutine(Init());
+        if (PhotonNetwork.isMasterClient)
+            StartCoroutine(SpawnNPC(Random.Range(10, 20)));
+    }
+
+    public void ReplenishNPCPool()
+    {
+        int npcs = GameObject.FindGameObjectsWithTag("NPC").Length;
+        int ran = Random.Range(1, 3);
+
+        if (PhotonNetwork.isMasterClient)
+        {
+            if (npcs < m_minNPC)
+            {
+                for (int i = 0; i < ran; i++)
+                {
+                    GameObject npc = PhotonNetwork.Instantiate("NPC", GetRandomSpawnPoint(), Quaternion.identity, 0);
+                    npc.GetComponent<TouristNPC>().m_maxSatisfaction += Mathf.RoundToInt(Random.Range(0, 3));
+                }
+            }
+        }
     }
 
     /// <summary> Creates the player. Called from the RoomScript script. </summary>
@@ -50,5 +77,13 @@ public class ClassicMode : GameMode
     /// <summary> Handles the Ondeath event. </summary>
     public override void OnDeath(GameObject player, PhotonPlayer other)
     {
+    }
+
+    public IEnumerator SpawnNPC(float timeToSpawn)
+    {
+        yield return new WaitForSeconds(timeToSpawn);
+        GameObject npc = PhotonNetwork.Instantiate("NPC", GetRandomSpawnPoint(), Quaternion.identity, 0);
+        npc.GetComponent<TouristNPC>().m_maxSatisfaction += Mathf.RoundToInt(Random.Range(0, 3));
+        StartCoroutine(SpawnNPC(Random.Range(10, 20)));
     }
 }

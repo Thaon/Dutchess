@@ -48,16 +48,6 @@ public class LeaveAreaAction : Action {
 
     public override bool Perform(GameObject agent)
     {
-        // GetComponent<Animator>().SetBool("faffing", true);
-        if (m_startingTime == 0)
-            m_startingTime = Time.time;
-
-        if (Time.time - m_startingTime > m_timeToComplete)
-        {
-            //GetComponent<Animator>().SetBool("faffing", false);
-            m_completed = true;
-            Destroy(this.gameObject);
-        }
         return true;
     }
 }
