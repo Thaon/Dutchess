@@ -118,10 +118,11 @@ public class ClassicMode : GameMode
     {
         m_isOver = true;
         yield return new WaitForSeconds(3);
-        Exit();
+        GetComponent<PhotonView>().RPC("Exit", PhotonTargets.All);
     }
 
     /// <summary> Called when we left the practice mode. Detachs the camera from the player. Destroys the player. </summary>
+    [PunRPC]
     protected override void Exit()
     {
         if (m_Camera)

@@ -28,9 +28,9 @@ public class Player : PunBehaviour {
         m_anim = GetComponent<Animator>();
 
         if (PhotonNetwork.isMasterClient)
-            m_isSpy = !true;
+            m_isSpy = true;
         else
-            m_isSpy = !false;
+            m_isSpy = false;
 
     }
 	
@@ -38,6 +38,7 @@ public class Player : PunBehaviour {
     {
         m_anim.SetFloat("speed", m_nav.velocity.magnitude);
         m_anim.SetInteger("state", (int)m_animState);
+
         if (m_target != null && m_nav.velocity.magnitude < 0.1f)
             transform.LookAt(m_target.transform.position);
 
@@ -94,7 +95,7 @@ public class Player : PunBehaviour {
                         ClassicMode mode = FindObjectOfType<ClassicMode>() as ClassicMode;
                         mode.PoliceWins();
                     }
-                    else
+                    else if(hit.collider.tag == "NPC")
                     {
                         ClassicMode mode = FindObjectOfType<ClassicMode>() as ClassicMode;
                         mode.SpyWins();
