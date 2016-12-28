@@ -2,14 +2,19 @@
 using System.Collections;
 using Photon;
 
+public enum AnimationState { idle, amused }
+
 [RequireComponent(typeof(PhotonView))]
 public class Player : PunBehaviour {
+
+    public AnimationState m_animState = AnimationState.idle;
 
     #region member variables
 
     private PhotonView m_pview;
     private Material m_mat;
-    private NavMeshAgent m_agent;
+    private NavMeshAgent m_nav;
+    private Animator m_anim;
 
     public bool m_isSpy;
     public Material m_standard;
@@ -20,7 +25,9 @@ public class Player : PunBehaviour {
     {
         m_pview = GetComponent<PhotonView>();
         m_mat = GetComponent<Material>();
-        m_agent = GetComponent<NavMeshAgent>();
+        m_nav = GetComponent<NavMeshAgent>();
+        m_anim = GetComponent<Animator>();
+
         if (PhotonNetwork.isMasterClient)
             m_isSpy = true;
         else
@@ -30,6 +37,8 @@ public class Player : PunBehaviour {
 	
 	void Update ()
     {
+        m_anim.SetFloat("speed", m_nav.velocity.magnitude);
+
 	    if (!m_pview.isMine)
         {
             //set material to standard
@@ -37,11 +46,11 @@ public class Player : PunBehaviour {
             return;
         }
 
-        if (m_agent.destination != null)
+        if (m_nav.destination != null)
         {
-            if (Vector3.Distance(transform.position, m_agent.destination) < 1)
+            if (Vector3.Distance(transform.position, m_nav.destination) < 1)
             {
-                m_agent.Stop();
+                m_nav.Stop();
             }
         }
 
@@ -53,8 +62,9 @@ public class Player : PunBehaviour {
             {
                 if (hit.collider.tag == "ToSee")
                 {
-                    m_agent.destination = hit.point;
-                    m_agent.Resume();
+                    m_animState = AnimationState.amused;
+                    m_nav.destination = hit.point;
+                    m_nav.Resume();
                 }
             }
         }

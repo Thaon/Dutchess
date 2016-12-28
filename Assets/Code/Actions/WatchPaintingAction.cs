@@ -101,13 +101,13 @@ public class WatchPaintingAction : Action {
 
     public override bool Perform(GameObject agent)
     {
-        GetComponent<Animator>().SetBool("watching", true);
+        GetComponent<TouristNPC>().m_state = AnimationState.amused;
         if (m_startingTime == 0)
             m_startingTime = Time.time;
 
         if (Time.time - m_startingTime > m_timeToComplete)
         {
-            GetComponent<Animator>().SetBool("watching", false);
+            GetComponent<TouristNPC>().m_state = AnimationState.idle;
             m_lastVisited.GetComponent<PointOfInterest>().RemoveUser(this.gameObject);
             m_lastVisited.GetComponent<PointOfInterest>().RestorePosition(m_target);
             GetComponent<TouristNPC>().m_satisfaction++;

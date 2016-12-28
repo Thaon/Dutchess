@@ -16,6 +16,7 @@ public abstract class NPCAgent : MonoBehaviour, IGoap {
 
     public Vector3 m_lookAtPosition;
     public int m_maxSatisfaction = 3;
+    public AnimationState m_state = AnimationState.idle;
 
     #endregion
 
@@ -30,6 +31,7 @@ public abstract class NPCAgent : MonoBehaviour, IGoap {
     {
         //do animator stuff
         m_anim.SetFloat("speed", m_nav.velocity.magnitude);
+        m_anim.SetInteger("state", (int)m_state);
 
         //increase/decrease values
         if (m_nav.velocity.magnitude < 0.1f && m_lookAtPosition != null)
