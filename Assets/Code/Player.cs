@@ -48,26 +48,52 @@ public class Player : PunBehaviour {
             return;
         }
 
-        if (m_nav.destination != null)
+        //WE ARE THE SPY, LET'S DO SPY SHIT
+        if (m_isSpy)
         {
-            if (Vector3.Distance(transform.position, m_nav.destination) < 1)
+            if (m_nav.destination != null)
             {
-                m_nav.Stop();
+                if (Vector3.Distance(transform.position, m_nav.destination) < 1)
+                {
+                    m_nav.Stop();
+                }
+            }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                RaycastHit hit;
+
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 1000))
+                {
+                    if (hit.collider.tag == "ToSee")
+                    {
+                        m_animState = AnimationState.amused;
+                        m_target = hit.collider.gameObject;
+                        m_nav.destination = hit.collider.GetComponent<PointOfInterest>().GetAvailablePosition().transform.position;
+                        m_nav.Resume();
+                    }
+                }
             }
         }
 
-        if (Input.GetMouseButtonDown(0))
+        //WE ARE NOT THE SPY, LET'S GET THE FUCKER
+        else
         {
-            RaycastHit hit;
+            GetComponent<MeshRenderer>().enabled = false;
+            gameObject.layer = 0;
 
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 1000))
+            if (Input.GetMouseButtonDown(0))
             {
-                if (hit.collider.tag == "ToSee")
+                RaycastHit hit;
+
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 1000))
                 {
-                    m_animState = AnimationState.amused;
-                    m_target = hit.collider.gameObject;
-                    m_nav.destination = hit.collider.GetComponent<PointOfInterest>().GetAvailablePosition().transform.position;
-                    m_nav.Resume();
+                    if (hit.collider.tag == "Player")
+                    {
+                        //we have the spy, let's end the round
+                        ClassicMode mode = FindObjectOfType<ClassicMode>() as ClassicMode;
+                        mode.PoliceWins();
+                    }
                 }
             }
         }

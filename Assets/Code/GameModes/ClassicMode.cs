@@ -60,6 +60,18 @@ public class ClassicMode : GameMode
         }
     }
 
+    public void PoliceWins()
+    {
+        roundTimer.StopRound();
+        if (Result)
+        {
+            Result.SetActive(true);
+            Result.transform.Find("ResultText").GetComponent<Text>().text = "The Police won!";
+            if (!m_isOver)
+                StartCoroutine(EndRound());
+        }
+    }
+
     public void ReplenishNPCPool()
     {
         int npcs = GameObject.FindGameObjectsWithTag("NPC").Length;
