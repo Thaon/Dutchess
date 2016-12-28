@@ -8,11 +8,11 @@ public class ClassicMode : GameMode
     #region member variables
 
     public int m_minNPC = 5;
+    public bool m_isOver = false;
 
     private RoundTimer roundTimer; // Reference to the round timer script.
     private Text Message;
     private GameObject Result; // Reference to the Result menu.
-    private bool m_isOver = false;
 
     #endregion
 
@@ -116,6 +116,7 @@ public class ClassicMode : GameMode
 
     public IEnumerator EndRound()
     {
+        m_isOver = true;
         yield return new WaitForSeconds(3);
         Exit();
     }

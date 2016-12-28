@@ -28,9 +28,9 @@ public class Player : PunBehaviour {
         m_anim = GetComponent<Animator>();
 
         if (PhotonNetwork.isMasterClient)
-            m_isSpy = true;
+            m_isSpy = !true;
         else
-            m_isSpy = false;
+            m_isSpy = !false;
 
     }
 	
@@ -79,7 +79,7 @@ public class Player : PunBehaviour {
         //WE ARE NOT THE SPY, LET'S GET THE FUCKER
         else
         {
-            GetComponent<MeshRenderer>().enabled = false;
+            //GetComponent<MeshRenderer>().enabled = false;
             gameObject.layer = 0;
 
             if (Input.GetMouseButtonDown(0))
@@ -97,7 +97,7 @@ public class Player : PunBehaviour {
                     else
                     {
                         ClassicMode mode = FindObjectOfType<ClassicMode>() as ClassicMode;
-                        mode.PoliceWins();
+                        mode.SpyWins();
                     }
                 }
             }

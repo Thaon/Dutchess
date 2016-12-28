@@ -105,7 +105,9 @@ public abstract class NPCAgent : MonoBehaviour, IGoap {
     {
         //see if we need to replenish the npc pool
         ClassicMode mode = FindObjectOfType<ClassicMode>() as ClassicMode;
-        if (mode != null)
+        if (mode != null && !mode.m_isOver)
+        {
             mode.ReplenishNPCPool();
+        }
     }
 }
